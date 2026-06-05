@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
     ];
 
     const result = await streamText({
-      model: openrouter(modelName),
+      model: openrouter(modelName) as any,
       messages: coreMessages as any,
     });
 
