@@ -11,7 +11,9 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  /* Transparent so the chat overlays the host page cleanly when embedded as an
+     iframe, instead of showing a white box. */
+  background: transparent;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
