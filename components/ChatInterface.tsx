@@ -316,7 +316,7 @@ export default function ChatInterface() {
           onLoad={() => getHero()}
         />
       )}
-      <div className="relative flex w-full max-w-[640px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl h-[90vh] max-h-[800px]">
+      <div className="relative flex w-full max-w-[640px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl h-[90vh] max-h-[900px]">
 
         {/* Header / Close Button */}
         <div className="absolute right-4 top-4 z-10">
