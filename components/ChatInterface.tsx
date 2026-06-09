@@ -80,7 +80,7 @@ export default function ChatInterface() {
   const shouldAutoScrollRef = useRef(true);
 
   // Initialize useChat
-  const { messages, input, handleInputChange, handleSubmit, setMessages, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, append, setMessages, isLoading } = useChat({
     api: "/api/chat",
   });
 
@@ -242,12 +242,9 @@ export default function ChatInterface() {
   };
 
   const handleExampleClick = (question: string) => {
-    handleInputChange({ target: { value: question } } as any);
-    // Simulate a small delay before sending, giving user visual feedback
-    setTimeout(() => {
-      const event = new Event("submit", { cancelable: true, bubbles: true });
-      handleSubmit(event as unknown as React.FormEvent<HTMLFormElement>);
-    }, 50);
+    // Send the suggested prompt immediately — append adds the user message and
+    // triggers the API call, instead of just populating the input box.
+    append({ role: "user", content: question });
   };
 
   const renderMessageContent = (
