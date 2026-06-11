@@ -5,14 +5,16 @@ import { useEffect, useState, useRef, UIEvent } from "react";
 import { X, Send, ArrowDown, Calendar } from "lucide-react";
 import Script from "next/script";
 
-// Turn a line of assistant text into nodes, making Markdown links
-// [label](url) and bare http(s) URLs clickable. Plain text passes through.
+// Turn a line of assistant text into nodes: Markdown links [label](url) and
+// bare http(s) URLs become anchors, **bold** becomes <strong>. Plain text
+// passes through.
 const LINK_CLASS =
   "text-blue-600 underline underline-offset-2 hover:text-blue-800 break-words";
 
 function renderTextWithLinks(text: string, keyPrefix: string) {
   const nodes: (string | JSX.Element)[] = [];
-  const pattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s)]+)/g;
+  const pattern =
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s)]+)|\*\*([^*]+)\*\*/g;
   let lastIndex = 0;
   let i = 0;
   let match: RegExpExecArray | null;
@@ -20,19 +22,27 @@ function renderTextWithLinks(text: string, keyPrefix: string) {
     if (match.index > lastIndex) {
       nodes.push(text.slice(lastIndex, match.index));
     }
-    const href = match[2] || match[3];
-    const label = match[1] || match[3];
-    nodes.push(
-      <a
-        key={`${keyPrefix}-${i}`}
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={LINK_CLASS}
-      >
-        {label}
-      </a>
-    );
+    if (match[4] !== undefined) {
+      nodes.push(
+        <strong key={`${keyPrefix}-${i}`} className="font-semibold text-gray-900">
+          {match[4]}
+        </strong>
+      );
+    } else {
+      const href = match[2] || match[3];
+      const label = match[1] || match[3];
+      nodes.push(
+        <a
+          key={`${keyPrefix}-${i}`}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={LINK_CLASS}
+        >
+          {label}
+        </a>
+      );
+    }
     lastIndex = pattern.lastIndex;
     i++;
   }
@@ -177,6 +187,13 @@ export default function ChatInterface() {
     e.preventDefault();
     setBookingError("");
 
+    // Only Indian 10-digit mobile numbers; we prefix +91 ourselves.
+    const phoneDigits = bookingForm.phone.replace(/\D/g, "");
+    if (phoneDigits.length !== 10) {
+      setBookingError("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
     const hero = getHero();
     if (!hero) {
       setBookingError(
@@ -194,7 +211,7 @@ export default function ChatInterface() {
       email: bookingForm.email.trim(),
       firstname: firstname || fullName,
       lastname: rest.join(" "),
-      phone: bookingForm.phone.trim(),
+      phone: `+91${phoneDigits}`,
       current_tool: bookingForm.tool,
       ...utms, // forward UTM params for attribution
       // Always tag the source so RevenueHero maps it to the HubSpot contact.
@@ -221,7 +238,7 @@ export default function ChatInterface() {
           {
             id: `rh-thanks-${prev.length}`,
             role: "assistant",
-            content: `Thanks, ${firstName}! 🎉 Our team will reach out to you shortly.`,
+            content: `Thanks, ${firstName} — our team will reach out to you shortly.`,
           },
         ]);
         fireConfetti();
@@ -318,29 +335,40 @@ export default function ChatInterface() {
       )}
       <div className="relative flex w-full max-w-[640px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl h-[90vh] max-h-[650px]">
 
-        {/* Header / Close Button */}
-        <div className="absolute right-4 top-4 z-10">
-          <button
-            onClick={handleClose}
-            className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
-            aria-label="Close Chat"
-          >
-            <X size={20} />
-          </button>
+        {/* Header — identity bar: Aria avatar, name, status; demo CTA appears
+            here once the inline button has been shown and the user keeps
+            chatting without clicking it. */}
+        <div className="flex items-center gap-3 border-b border-gray-100 px-5 py-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white border border-gray-100 overflow-hidden shadow-sm">
+            <img src="/logo.png" alt="Aria" className="h-7 w-7 object-contain" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-gray-900 leading-tight">Aria</span>
+            <span className="flex items-center gap-1.5 text-xs text-gray-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+              AI Accountant assistant
+            </span>
+          </div>
+          <div className="ml-auto flex items-center gap-1">
+            {showFloatingDemo && (
+              <button
+                type="button"
+                onClick={openBooking}
+                className="mr-1 flex items-center gap-1.5 rounded-full bg-gray-900 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-gray-800 transition-colors"
+              >
+                <Calendar size={13} />
+                Book a Demo
+              </button>
+            )}
+            <button
+              onClick={handleClose}
+              className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              aria-label="Close Chat"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
-
-        {/* Floating "Book a Demo" CTA — appears once the inline button has been
-            shown and the user keeps chatting without clicking it. */}
-        {showFloatingDemo && (
-          <button
-            type="button"
-            onClick={openBooking}
-            className="absolute left-4 top-4 z-20 flex items-center gap-1.5 rounded-full bg-gray-900 px-4 py-2 text-[13px] font-medium text-white shadow-md hover:bg-gray-800 active:scale-95 transition-all"
-          >
-            <Calendar size={14} />
-            Book a Demo
-          </button>
-        )}
 
         {/* Scrollable Conversation Area */}
         <div
@@ -349,17 +377,15 @@ export default function ChatInterface() {
           className="flex-1 overflow-y-auto p-6 scrollbar-thin relative"
         >
           {isEmpty ? (
-            <div className="flex flex-col pt-12">
+            <div className="flex flex-col pt-4">
               <div className="flex items-start gap-4 mb-8">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white border border-gray-100 overflow-hidden shadow-sm">
                   <img src="/logo.png" alt="Aria" className="h-6 w-6 object-contain" />
                 </div>
                 <div className="flex flex-col text-gray-800 text-[15px] leading-relaxed">
-                  <p>Hi!</p>
-                  <p className="mt-2">I&apos;m Aria — AI Accountant&apos;s assistant, trained on our product, features, and docs.</p>
-                  <p className="mt-2">
-                    Ask me anything about <span className="inline-block rounded-full bg-gray-800 px-3 py-1 text-xs font-semibold text-white ml-1">AI Accountant</span>
-                  </p>
+                  <p>Hi, I&apos;m Aria.</p>
+                  <p className="mt-2">I can help with bookkeeping automation, GST, Tally, and anything about how AI Accountant works.</p>
+                  <p className="mt-2">What&apos;s on your mind?</p>
                 </div>
               </div>
 
@@ -481,13 +507,24 @@ export default function ChatInterface() {
 
                   <label className="flex flex-col gap-1 text-sm text-gray-700">
                     Phone
-                    <input
-                      type="tel"
-                      required
-                      value={bookingForm.phone}
-                      onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
-                      className="rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                    />
+                    <div className="flex items-center rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500/50">
+                      <span className="pl-4 pr-1 py-2.5 text-[15px] text-gray-500 select-none">+91</span>
+                      <input
+                        type="tel"
+                        required
+                        inputMode="numeric"
+                        placeholder="10-digit mobile number"
+                        value={bookingForm.phone}
+                        onChange={(e) =>
+                          setBookingForm({
+                            ...bookingForm,
+                            // Keep only digits, cap at 10 — the +91 prefix is shown separately.
+                            phone: e.target.value.replace(/\D/g, "").slice(0, 10),
+                          })
+                        }
+                        className="flex-1 min-w-0 rounded-r-xl bg-transparent pl-1 pr-4 py-2.5 text-[15px] text-gray-900 focus:outline-none"
+                      />
+                    </div>
                   </label>
 
                   <label className="flex flex-col gap-1 text-sm text-gray-700">
@@ -545,15 +582,20 @@ export default function ChatInterface() {
               type="text"
               value={input}
               onChange={handleInputChange}
+              autoFocus
               placeholder="Ask anything about AI Accountant..."
               className="w-full rounded-full border-none bg-gray-100 py-3.5 pl-6 pr-12 text-[15px] text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
             />
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="absolute right-2 flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-blue-600 disabled:opacity-50 disabled:hover:text-gray-400 transition-colors"
+              className={`absolute right-2 flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+                input.trim() && !isLoading
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "text-gray-400"
+              }`}
             >
-              <Send size={18} />
+              <Send size={16} />
             </button>
           </form>
         </div>
