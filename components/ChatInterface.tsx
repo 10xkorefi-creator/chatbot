@@ -197,6 +197,9 @@ export default function ChatInterface() {
       phone: bookingForm.phone.trim(),
       current_tool: bookingForm.tool,
       ...utms, // forward UTM params for attribution
+      // Always tag the source so RevenueHero maps it to the HubSpot contact.
+      // Placed after ...utms so it wins over any utm_source in the URL.
+      utm_source: "website chatbot",
     };
 
     try {
@@ -364,7 +367,7 @@ export default function ChatInterface() {
                 <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Example Questions</p>
                 <div className="flex flex-col gap-3">
                   {[
-                    "How does AiA automate Tally bookkeeping?",
+                    "How does AI Accountant automate Tally bookkeeping?",
                     "How accurate is the AI categorization?",
                     "Do I need to switch from Tally?"
                   ].map((q, i) => (
