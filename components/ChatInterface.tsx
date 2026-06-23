@@ -55,7 +55,7 @@ function renderTextWithLinks(text: string, keyPrefix: string) {
 function parseMessageContent(content: string) {
   let text = content;
   let suggestions: string[] = [];
-  
+
   // Parse suggestions marker: [SUGGESTIONS] Q1 | Q2
   const suggestionsMatch = text.match(/\[SUGGESTIONS\]([\s\S]*)$/);
   if (suggestionsMatch) {
@@ -66,10 +66,10 @@ function parseMessageContent(content: string) {
       .filter((s) => s.length > 0);
     text = text.replace(/\[SUGGESTIONS\][\s\S]*$/, "");
   }
-  
+
   // Strip other markers
   text = text.replace(/\[SHOW_DEMO_BUTTON\]/g, "").replace(/\[OPEN_BOOKING\]/g, "").trim();
-  
+
   return { text, suggestions };
 }
 
@@ -229,7 +229,7 @@ export default function ChatInterface() {
         confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
         confetti({ particleCount: 60, spread: 100, startVelocity: 45, origin: { y: 0.6 } });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   // Submit the lead to RevenueHero. EVERY lead is captured via hero.submit();
@@ -334,7 +334,7 @@ export default function ChatInterface() {
     forceButton: boolean = false
   ) => {
     const { text: textToShow } = parseMessageContent(content);
-    
+
     return (
       <div className="flex flex-col items-start">
         <div>
@@ -417,7 +417,7 @@ export default function ChatInterface() {
                   Ask Aria
                 </h2>
                 <p className="mt-1 text-[11px] text-slate-500 max-w-[280px] leading-relaxed">
-                  Your AI Accountant assistant. Ask me anything about bookkeeping, GST, or Tally.
+                  Ask me anything related to AIAccountant or virtual accounting.
                 </p>
               </div>
 
@@ -444,7 +444,7 @@ export default function ChatInterface() {
                   <button
                     key={i}
                     onClick={() => handleExampleClick(bubble.prompt)}
-                    className="px-4 py-2 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 hover:text-slate-900 rounded-full border-0 shadow-md shadow-slate-100 hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
+                    className="px-4 py-2 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 hover:text-slate-900 rounded-xl border shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
                   >
                     {bubble.text}
                   </button>
@@ -479,7 +479,7 @@ export default function ChatInterface() {
                           m.content,
                           true,
                           m.id === demoButtonMessageId &&
-                            !(isLoading && m.id === lastMessageId)
+                          !(isLoading && m.id === lastMessageId)
                         )}
                       </div>
                     </div>
@@ -539,113 +539,112 @@ export default function ChatInterface() {
 
             <div className="flex-1 overflow-y-auto p-6">
               <form onSubmit={handleBookingSubmit} className="flex flex-col gap-4">
-                  <p className="text-sm text-gray-500">
-                    Share a few details and we&apos;ll set you up.
-                  </p>
+                <p className="text-sm text-gray-500">
+                  Share a few details and we&apos;ll set you up.
+                </p>
 
-                  <label className="flex flex-col gap-1 text-sm text-gray-700">
-                    Name
+                <label className="flex flex-col gap-1 text-sm text-gray-700">
+                  Name
+                  <input
+                    type="text"
+                    required
+                    name="name"
+                    autoComplete="name"
+                    value={bookingForm.name}
+                    onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
+                    className="rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1 text-sm text-gray-700">
+                  Email
+                  <input
+                    type="email"
+                    required
+                    name="email"
+                    autoComplete="email"
+                    value={bookingForm.email}
+                    onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
+                    className="rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1 text-sm text-gray-700">
+                  Phone
+                  <div className="flex items-center rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500/50">
+                    <span className="pl-4 pr-1 py-2.5 text-[15px] text-gray-500 select-none">+91</span>
                     <input
-                      type="text"
+                      type="tel"
                       required
-                      name="name"
-                      autoComplete="name"
-                      value={bookingForm.name}
-                      onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
-                      className="rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      name="phone"
+                      autoComplete="tel"
+                      inputMode="numeric"
+                      placeholder="10-digit mobile number"
+                      value={bookingForm.phone}
+                      onChange={(e) =>
+                        setBookingForm({
+                          ...bookingForm,
+                          // Keep only digits, cap at 10 — the +91 prefix is shown separately.
+                          phone: e.target.value.replace(/\D/g, "").slice(0, 10),
+                        })
+                      }
+                      className="flex-1 min-w-0 rounded-r-xl bg-transparent pl-1 pr-4 py-2.5 text-[15px] text-gray-900 focus:outline-none"
                     />
-                  </label>
+                  </div>
+                </label>
 
-                  <label className="flex flex-col gap-1 text-sm text-gray-700">
-                    Email
-                    <input
-                      type="email"
-                      required
-                      name="email"
-                      autoComplete="email"
-                      value={bookingForm.email}
-                      onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
-                      className="rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                    />
-                  </label>
-
-                  <label className="flex flex-col gap-1 text-sm text-gray-700">
-                    Phone
-                    <div className="flex items-center rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500/50">
-                      <span className="pl-4 pr-1 py-2.5 text-[15px] text-gray-500 select-none">+91</span>
-                      <input
-                        type="tel"
-                        required
-                        name="phone"
-                        autoComplete="tel"
-                        inputMode="numeric"
-                        placeholder="10-digit mobile number"
-                        value={bookingForm.phone}
-                        onChange={(e) =>
-                          setBookingForm({
-                            ...bookingForm,
-                            // Keep only digits, cap at 10 — the +91 prefix is shown separately.
-                            phone: e.target.value.replace(/\D/g, "").slice(0, 10),
-                          })
-                        }
-                        className="flex-1 min-w-0 rounded-r-xl bg-transparent pl-1 pr-4 py-2.5 text-[15px] text-gray-900 focus:outline-none"
-                      />
-                    </div>
-                  </label>
-
-                  <div className="flex flex-col gap-1 text-sm text-gray-700">
-                    Which accounting tool do you use?
-                    {/* Custom dropdown (not a native <select>, which sometimes
+                <div className="flex flex-col gap-1 text-sm text-gray-700">
+                  Which accounting tool do you use?
+                  {/* Custom dropdown (not a native <select>, which sometimes
                         failed to open inside the embedded iframe). Opens upward
                         so the list isn't clipped by the scrollable form. */}
-                    <div className="relative" ref={toolDropdownRef}>
-                      <button
-                        type="button"
-                        onClick={() => setToolDropdownOpen((o) => !o)}
-                        className="flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-left text-[15px] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                      >
-                        <span className={bookingForm.tool ? "text-gray-900" : "text-gray-400"}>
-                          {bookingForm.tool || "Select a tool"}
-                        </span>
-                        <ChevronDown
-                          size={16}
-                          className={`shrink-0 text-gray-400 transition-transform ${toolDropdownOpen ? "rotate-180" : ""}`}
-                        />
-                      </button>
-                      {toolDropdownOpen && (
-                        <div className="absolute bottom-full z-10 mb-1 w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-                          {TOOL_OPTIONS.map((t) => (
-                            <button
-                              key={t}
-                              type="button"
-                              onClick={() => {
-                                setBookingForm({ ...bookingForm, tool: t });
-                                setToolDropdownOpen(false);
-                              }}
-                              className={`block w-full px-4 py-2.5 text-left text-[15px] transition-colors hover:bg-blue-50 ${
-                                bookingForm.tool === t ? "bg-blue-50/60 text-blue-700" : "text-gray-700"
+                  <div className="relative" ref={toolDropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setToolDropdownOpen((o) => !o)}
+                      className="flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-left text-[15px] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    >
+                      <span className={bookingForm.tool ? "text-gray-900" : "text-gray-400"}>
+                        {bookingForm.tool || "Select a tool"}
+                      </span>
+                      <ChevronDown
+                        size={16}
+                        className={`shrink-0 text-gray-400 transition-transform ${toolDropdownOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                    {toolDropdownOpen && (
+                      <div className="absolute bottom-full z-10 mb-1 w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+                        {TOOL_OPTIONS.map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => {
+                              setBookingForm({ ...bookingForm, tool: t });
+                              setToolDropdownOpen(false);
+                            }}
+                            className={`block w-full px-4 py-2.5 text-left text-[15px] transition-colors hover:bg-blue-50 ${bookingForm.tool === t ? "bg-blue-50/60 text-blue-700" : "text-gray-700"
                               }`}
-                            >
-                              {t}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                          >
+                            {t}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                </div>
 
-                  {bookingError && (
-                    <p className="text-sm text-red-600">{bookingError}</p>
-                  )}
+                {bookingError && (
+                  <p className="text-sm text-red-600">{bookingError}</p>
+                )}
 
-                  <button
-                    type="submit"
-                    disabled={bookingStatus === "submitting"}
-                    className="mt-2 px-5 py-3 bg-gray-900 text-white rounded-xl text-[15px] font-medium hover:bg-gray-800 active:scale-95 transition-all disabled:opacity-60"
-                  >
-                    {bookingStatus === "submitting" ? "Please wait…" : "Continue"}
-                  </button>
-                </form>
+                <button
+                  type="submit"
+                  disabled={bookingStatus === "submitting"}
+                  className="mt-2 px-5 py-3 bg-gray-900 text-white rounded-xl text-[15px] font-medium hover:bg-gray-800 active:scale-95 transition-all disabled:opacity-60"
+                >
+                  {bookingStatus === "submitting" ? "Please wait…" : "Continue"}
+                </button>
+              </form>
             </div>
           </div>
         )}
@@ -665,8 +664,8 @@ export default function ChatInterface() {
 
         {/* Input Area */}
         <div className="px-6 pb-2 pt-4 bg-white border-t border-slate-100">
-          <form 
-            onSubmit={handleSubmit} 
+          <form
+            onSubmit={handleSubmit}
             className="flex flex-col bg-slate-50 focus-within:bg-white rounded-2xl p-3.5 border border-slate-200/80 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-200"
           >
             {/* Row 1: Text Input */}
@@ -699,11 +698,10 @@ export default function ChatInterface() {
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 ${
-                  input.trim() && !isLoading
-                    ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20 active:scale-95"
-                    : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                }`}
+                className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 ${input.trim() && !isLoading
+                  ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20 active:scale-95"
+                  : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                  }`}
               >
                 <Send size={14} />
               </button>
