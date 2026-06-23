@@ -426,29 +426,25 @@ export default function ChatInterface() {
                 {[
                   {
                     text: "🤖 Tally Automation",
-                    prompt: "How does AI Accountant automate Tally bookkeeping?",
-                    style: "bg-blue-50/60 hover:bg-blue-100/85 border-blue-100/60 text-blue-700"
+                    prompt: "How does AI Accountant automate Tally bookkeeping?"
                   },
                   {
                     text: "🎯 Accuracy Rate",
-                    prompt: "How accurate is the AI categorization and scanned bill extraction?",
-                    style: "bg-emerald-50/60 hover:bg-emerald-100/85 border-emerald-100/60 text-emerald-700"
+                    prompt: "How accurate is the AI categorization and scanned bill extraction?"
                   },
                   {
                     text: "💼 CA Support",
-                    prompt: "What is included in the Virtual Accounting managed service?",
-                    style: "bg-indigo-50/60 hover:bg-indigo-100/85 border-indigo-100/60 text-indigo-700"
+                    prompt: "What is included in the Virtual Accounting managed service?"
                   },
                   {
                     text: "🔌 Support for Zoho?",
-                    prompt: "Do you support Zoho Books integration?",
-                    style: "bg-purple-50/60 hover:bg-purple-100/85 border-purple-100/60 text-purple-700"
+                    prompt: "Do you support Zoho Books integration?"
                   }
                 ].map((bubble, i) => (
                   <button
                     key={i}
                     onClick={() => handleExampleClick(bubble.prompt)}
-                    className={`px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-all active:scale-95 cursor-pointer shadow-sm ${bubble.style}`}
+                    className="px-4 py-2 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 hover:text-slate-900 rounded-full border-0 shadow-md shadow-slate-100 hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
                   >
                     {bubble.text}
                   </button>
