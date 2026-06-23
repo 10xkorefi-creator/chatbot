@@ -57,14 +57,14 @@ function parseMessageContent(content: string) {
   let suggestions: string[] = [];
   
   // Parse suggestions marker: [SUGGESTIONS] Q1 | Q2
-  const suggestionsMatch = text.match(/\[SUGGESTIONS\](.*)$/s);
+  const suggestionsMatch = text.match(/\[SUGGESTIONS\]([\s\S]*)$/);
   if (suggestionsMatch) {
     const rawSuggestions = suggestionsMatch[1];
     suggestions = rawSuggestions
       .split("|")
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
-    text = text.replace(/\[SUGGESTIONS\].*$/s, "");
+    text = text.replace(/\[SUGGESTIONS\][\s\S]*$/, "");
   }
   
   // Strip other markers
