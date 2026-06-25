@@ -30,7 +30,7 @@ Add the following HTML in an "Embed" component on your Webflow site (or in the s
   id="aia-chat-trigger" 
   style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; border-radius: 50px; background-color: #2563eb; color: white; border: none; padding: 12px 24px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
 >
-  Ask Aria
+  Ask AiA
 </button>
 
 <!-- Iframe Container (Hidden by default) -->

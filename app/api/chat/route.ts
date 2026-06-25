@@ -35,7 +35,7 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-const SYSTEM_PROMPT = `You are Aria, the assistant for AI Accountant.
+const SYSTEM_PROMPT = `You are AiA, the assistant for AI Accountant.
 
 CRITICAL BEHAVIOR:
 - YOU MUST KEEP ALL RESPONSES EXTREMELY BRIEF (1 to 2 short sentences maximum). 

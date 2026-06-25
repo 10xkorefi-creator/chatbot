@@ -376,15 +376,15 @@ export default function ChatInterface() {
       )}
       <div className="relative flex w-full max-w-[640px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl h-[95vh] max-h-[750px]">
 
-        {/* Header — identity bar: Aria avatar, name, status; demo CTA appears
+        {/* Header — identity bar: AiA avatar, name, status; demo CTA appears
             here once the inline button has been shown and the user keeps
             chatting without clicking it. */}
         <div className="flex items-center gap-3 border-b border-gray-100 px-5 py-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white border border-gray-100 overflow-hidden shadow-sm">
-            <img src="/logo.png" alt="Aria" className="h-7 w-7 object-contain" />
+            <img src="/logo.png" alt="AiA" className="h-7 w-7 object-contain" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-gray-900 leading-tight">Aria</span>
+            <span className="text-sm font-semibold text-gray-900 leading-tight">AiA</span>
             <span className="flex items-center gap-1.5 text-xs text-gray-400">
               <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
               AI Accountant assistant
@@ -412,9 +412,9 @@ export default function ChatInterface() {
             <div className="flex flex-col pt-4 pb-4 items-center justify-center min-h-[250px] animate-fade-in">
               {/* Centered Hero Greeting */}
               <div className="flex flex-col items-center text-center mb-5">
-                <img src="/logo.png" alt="Aria Logo" className="h-10 w-10 object-contain mb-2" />
+                <img src="/logo.png" alt="AiA Logo" className="h-10 w-10 object-contain mb-2" />
                 <h2 className="text-lg font-bold tracking-tight text-slate-800">
-                  Ask Aria
+                  Ask AiA
                 </h2>
                 <p className="mt-1 text-[11px] text-slate-500 max-w-[280px] leading-relaxed">
                   Ask me anything related to AIAccountant or virtual accounting.
@@ -464,7 +464,7 @@ export default function ChatInterface() {
                     </div>
                   );
                 }
-                // Assistant messages: left-aligned with the Aria avatar.
+                // Assistant messages: left-aligned with the AiA avatar.
                 const isLastAssistant = m.id === lastAssistantMessageId;
                 const { suggestions } = parseMessageContent(m.content);
 
@@ -472,7 +472,7 @@ export default function ChatInterface() {
                   <div key={m.id} className="relative group flex flex-col">
                     <div className="flex items-start gap-4">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white border border-gray-100 overflow-hidden shadow-sm">
-                        <img src="/logo.png" alt="Aria" className="h-6 w-6 object-contain" />
+                        <img src="/logo.png" alt="AiA" className="h-6 w-6 object-contain" />
                       </div>
                       <div className="flex-1 text-[15px] text-gray-800 leading-relaxed whitespace-pre-wrap mt-1">
                         {renderMessageContent(
@@ -504,7 +504,7 @@ export default function ChatInterface() {
               {isLoading && (
                 <div className="flex items-start gap-4 py-4">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white border border-gray-100 overflow-hidden shadow-sm">
-                    <img src="/logo.png" alt="Aria" className="h-6 w-6 object-contain" />
+                    <img src="/logo.png" alt="AiA" className="h-6 w-6 object-contain" />
                   </div>
                   <div className="flex-1 flex items-center h-8">
                     <span className="flex gap-1">
